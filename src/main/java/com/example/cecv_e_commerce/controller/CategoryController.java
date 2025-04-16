@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.cecv_e_commerce.domain.dto.category.CategoryListResponseDTO;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;

@@ -28,11 +28,10 @@ public class CategoryService {
     }
 
     private CategoryDTO convertToDTO(Category category) {
-        CategoryDTO dto = new CategoryDTO();
-        dto.setId(category.getId());
-        dto.setName(category.getName());
-        dto.setDescription(category.getDescription());
-
-        return dto;
+        return CategoryDTO.builder()
+            .id(category.getId())
+            .name(category.getName())
+            .description(category.getDescription())
+            .build();
     }
 }
