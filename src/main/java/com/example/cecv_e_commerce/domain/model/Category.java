@@ -1,6 +1,6 @@
 package com.example.cecv_e_commerce.domain.model;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,5 +20,6 @@ public class Category {
 
     private String description;
 
-    private Date created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

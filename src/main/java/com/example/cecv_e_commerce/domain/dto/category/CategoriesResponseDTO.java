@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryListResponseDTO {
+public class CategoriesResponseDTO {
     private List<CategoryDTO> categories;
     private int categoriesCount;
 }
