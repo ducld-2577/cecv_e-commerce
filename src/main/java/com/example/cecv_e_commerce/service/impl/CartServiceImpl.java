@@ -56,7 +56,7 @@ public class CartServiceImpl implements CartService {
     private CartItemDTO mapToCartItemDTO(CartItem cartItem) {
         Product product = cartItem.getProduct();
         ProductDTO productDTO = new ProductDTO(product.getId(), product.getName(),
-                product.getDescription(), product.getPrice(), product.getQuantity());
+        product.getDescription(), product.getPrice(), product.getQuantity());
 
         return new CartItemDTO(cartItem.getId(), cartItem.getQuantity(), productDTO);
     }
@@ -123,7 +123,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCurrentUserCart();
         cart.getItems().clear();
         cartRepository.save(cart);
-        
+
         return mapToCartResponseDTO(cart);
     }
 }
