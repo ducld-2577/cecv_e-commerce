@@ -12,7 +12,7 @@ import lombok.*;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String name;
 
@@ -20,5 +20,5 @@ public class Product {
 
     private double price;
 
-    private int stock;
+    private int quantity;
 }

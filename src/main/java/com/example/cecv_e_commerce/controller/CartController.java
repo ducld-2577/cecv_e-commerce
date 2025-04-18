@@ -2,41 +2,51 @@ package com.example.cecv_e_commerce.controller;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.cecv_e_commerce.domain.dto.cart.CartItemRequestCreateDTO;
+import com.example.cecv_e_commerce.domain.dto.cart.CartItemRequestUpdateDTO;
 import com.example.cecv_e_commerce.domain.dto.cart.CartResponseDTO;
 import com.example.cecv_e_commerce.service.CartService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/cart")
+@RequestMapping("/api/v1/cart")
 @RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
 
     @GetMapping
-    public CartResponseDTO getCart(@RequestParam Long userId) {
-        return cartService.getCart(userId);
+    public CartResponseDTO getCart() {
+        return cartService.getCart();
     }
 
-    @PostMapping("/add")
-    public CartResponseDTO addToCart(@RequestParam Long userId, @RequestParam Long productId,
-            @RequestParam int quantity) {
-        return cartService.addToCart(userId, productId, quantity);
+    @PostMapping("/items")
+    public CartResponseDTO addToCart(@Valid @RequestBody CartItemRequestCreateDTO cartItemRequestDTO) {
+        return cartService.addToCart(cartItemRequestDTO);
     }
 
-    @DeleteMapping("/product/{productId}")
-    public CartResponseDTO removeFromCart(@RequestParam Long userId, @RequestParam Long productId) {
-        return cartService.removeFromCart(userId, productId);
+    @DeleteMapping("/items/{productId}")
+    public CartResponseDTO removeFromCart(@PathVariable Integer productId) {
+        return cartService.removeFromCart(productId);
     }
 
-    @PutMapping("/update")
-    public CartResponseDTO updateCartItem(@RequestParam Long userId, @RequestParam Long productId,
-            @RequestParam int quantity) {
-        return cartService.updateCartItem(userId, productId, quantity);
+    @PutMapping("/items/{productId}")
+    public CartResponseDTO updateCartItem(@PathVariable Integer productId,
+        @Valid @RequestBody CartItemRequestUpdateDTO cartItemRequestUpdateDTO) {
+        return cartService.updateCartItem(productId, cartItemRequestUpdateDTO);
+    }
+
+    @DeleteMapping()
+    public CartResponseDTO clearCart() {
+        return cartService.clearCart();
     }
 }
