@@ -1,19 +1,17 @@
 package com.example.cecv_e_commerce.service.impl;
 
 import com.example.cecv_e_commerce.config.JwtTokenProvider;
-import com.example.cecv_e_commerce.domain.dto.cart.CartDTO;
 import com.example.cecv_e_commerce.domain.dto.user.AuthResponseDTO;
 import com.example.cecv_e_commerce.domain.dto.user.LoginRequestDTO;
 import com.example.cecv_e_commerce.domain.dto.user.RegisterRequestDTO;
 import com.example.cecv_e_commerce.domain.dto.user.UserDTO;
-import com.example.cecv_e_commerce.domain.model.Cart;
 import com.example.cecv_e_commerce.domain.model.Role;
 import com.example.cecv_e_commerce.domain.model.User;
 import com.example.cecv_e_commerce.exception.ResourceNotFoundException;
-import com.example.cecv_e_commerce.repository.CartRepository;
 import com.example.cecv_e_commerce.repository.UserRepository;
 import com.example.cecv_e_commerce.exception.BadRequestException;
 import com.example.cecv_e_commerce.service.AuthService;
+import com.example.cecv_e_commerce.service.CartService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private CartRepository cartRepository;
+    private CartService cartService;
 
     @Value("${app.activation.base-url}")
     private String activationBaseUrl;
@@ -122,16 +120,9 @@ public class AuthServiceImpl implements AuthService {
         user.setActivationToken(null); // Delete token after active
         user.setActivationDeadline(null);
         userRepository.save(user);
-        createCart(user);
+        cartService.createCart(user);
 
         logger.info("Account activated successfully for email: {}", user.getEmail());
-    }
-
-    private void createCart(User user) {
-        Cart cart = new Cart();
-        cart.setUser(user);
-        
-        cartRepository.save(cart);
     }
 
     @Override

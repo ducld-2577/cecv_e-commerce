@@ -20,6 +20,7 @@ import com.example.cecv_e_commerce.repository.ProductRepository;
 import com.example.cecv_e_commerce.exception.ResourceNotFoundException;
 import com.example.cecv_e_commerce.service.CartService;
 import com.example.cecv_e_commerce.exception.BadRequestException;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,14 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+
+    @Override
+    @Transactional
+    public Cart createCart(User user) {
+        Cart cart = new Cart();
+        cart.setUser(user);
+        return cartRepository.save(cart);
+    }
 
     private User getCurrentUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -56,7 +65,7 @@ public class CartServiceImpl implements CartService {
     private CartItemDTO mapToCartItemDTO(CartItem cartItem) {
         Product product = cartItem.getProduct();
         ProductDTO productDTO = new ProductDTO(product.getId(), product.getName(),
-        product.getDescription(), product.getPrice(), product.getQuantity());
+            product.getDescription(), product.getPrice(), product.getQuantity());
 
         return new CartItemDTO(cartItem.getId(), cartItem.getQuantity(), productDTO);
     }
@@ -76,7 +85,7 @@ public class CartServiceImpl implements CartService {
                 .orElse(null);
 
         if (existingCartItem != null) {
-            int newQuantity = existingCartItem.getQuantity() + cartItemRequestDTO.getQuantity();
+            Integer newQuantity = existingCartItem.getQuantity() + cartItemRequestDTO.getQuantity();
             if (newQuantity > product.getQuantity()) {
                     throw new BadRequestException("Not enough stock available. Available quantity: " + product.getQuantity());
             }
@@ -94,7 +103,7 @@ public class CartServiceImpl implements CartService {
         return mapToCartResponseDTO(cart);
     }
 
-    public CartResponseDTO removeFromCart(int productId) {
+    public CartResponseDTO removeFromCart(Integer productId) {
         Cart cart = getCurrentUserCart();
         cart.getItems().removeIf(item -> item.getProduct().getId().equals(productId));
         cartRepository.save(cart);
@@ -102,7 +111,7 @@ public class CartServiceImpl implements CartService {
         return mapToCartResponseDTO(cart);
     }
 
-    public CartResponseDTO updateCartItem(int productId, CartItemRequestUpdateDTO cartItemRequestUpdateDTO) {
+    public CartResponseDTO updateCartItem(Integer productId, CartItemRequestUpdateDTO cartItemRequestUpdateDTO) {
         Cart cart = getCurrentUserCart();
         CartItem cartItem = cart.getItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
