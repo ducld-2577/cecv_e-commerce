@@ -1,4 +1,16 @@
 package com.example.cecv_e_commerce.domain.dto.category;
 
-public record CategoryDTO(Long id, String name, String description) {
+import lombok.*;
+import java.time.LocalDateTime;
+
+@Data
+public class CategoryDTO {
+
+    private Integer id;
+
+    private String name;
+
+    private String description;
+
+    private LocalDateTime createdAt;
 }
