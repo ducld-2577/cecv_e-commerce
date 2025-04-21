@@ -1,10 +1,8 @@
 package com.example.cecv_e_commerce.service.impl;
 
 import java.util.stream.Collectors;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import lombok.*;
 import com.example.cecv_e_commerce.domain.dto.cart.CartResponseDTO;
 import com.example.cecv_e_commerce.domain.dto.cart.CartItemDTO;
@@ -37,42 +35,14 @@ public class CartServiceImpl implements CartService {
         return cartRepository.save(cart);
     }
 
-    private User getCurrentUser() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found");
-        }
-        return user;
-    }
-
-    private Cart getCurrentUserCart() {
-        User user = getCurrentUser();
-        return cartRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
-    }
-
     public CartResponseDTO getCart() {
         Cart cart = getCurrentUserCart();
         return mapToCartResponseDTO(cart);
     }
 
-    private CartResponseDTO mapToCartResponseDTO(Cart cart) {
-        return new CartResponseDTO(cart.getId(), cart.getUser().getId(),
-                cart.getItems().stream().map(this::mapToCartItemDTO).collect(Collectors.toList()),
-                cart.getItems().size());
-    }
-
-    private CartItemDTO mapToCartItemDTO(CartItem cartItem) {
-        Product product = cartItem.getProduct();
-        ProductDTO productDTO = new ProductDTO(product.getId(), product.getName(),
-            product.getDescription(), product.getPrice(), product.getQuantity());
-
-        return new CartItemDTO(cartItem.getId(), cartItem.getQuantity(), productDTO);
-    }
-
     public CartResponseDTO addToCart(CartItemRequestCreateDTO cartItemRequestDTO) {
         Cart cart = getCurrentUserCart();
-        Product product = productRepository.findById((long) cartItemRequestDTO.getProductId())
+        Product product = productRepository.findById(cartItemRequestDTO.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         if (product.getQuantity() < cartItemRequestDTO.getQuantity()) {
@@ -134,5 +104,34 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
 
         return mapToCartResponseDTO(cart);
+    }
+
+    
+    private User getCurrentUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found");
+        }
+        return user;
+    }
+
+    private Cart getCurrentUserCart() {
+        User user = getCurrentUser();
+        return cartRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+    }
+
+    private CartResponseDTO mapToCartResponseDTO(Cart cart) {
+        return new CartResponseDTO(cart.getId(), cart.getUser().getId(),
+                cart.getItems().stream().map(this::mapToCartItemDTO).collect(Collectors.toList()),
+                cart.getItems().size());
+    }
+
+    private CartItemDTO mapToCartItemDTO(CartItem cartItem) {
+        Product product = cartItem.getProduct();
+        ProductDTO productDTO = new ProductDTO(product.getId(), product.getName(),
+            product.getDescription(), product.getPrice(), product.getQuantity());
+
+        return new CartItemDTO(cartItem.getId(), cartItem.getQuantity(), productDTO);
     }
 }

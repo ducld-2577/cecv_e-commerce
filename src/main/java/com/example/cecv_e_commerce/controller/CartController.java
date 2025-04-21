@@ -28,17 +28,17 @@ public class CartController {
         return cartService.getCart();
     }
 
-    @PostMapping("/items")
+    @PostMapping()
     public CartResponseDTO addToCart(@Valid @RequestBody CartItemRequestCreateDTO cartItemRequestDTO) {
         return cartService.addToCart(cartItemRequestDTO);
     }
 
-    @DeleteMapping("/items/{productId}")
+    @DeleteMapping("/{productId}")
     public CartResponseDTO removeFromCart(@PathVariable Integer productId) {
         return cartService.removeFromCart(productId);
     }
 
-    @PutMapping("/items/{productId}")
+    @PutMapping("/{productId}")
     public CartResponseDTO updateCartItem(@PathVariable Integer productId,
         @Valid @RequestBody CartItemRequestUpdateDTO cartItemRequestUpdateDTO) {
         return cartService.updateCartItem(productId, cartItemRequestUpdateDTO);
