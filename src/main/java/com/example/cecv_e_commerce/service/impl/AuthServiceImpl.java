@@ -11,6 +11,7 @@ import com.example.cecv_e_commerce.exception.ResourceNotFoundException;
 import com.example.cecv_e_commerce.repository.UserRepository;
 import com.example.cecv_e_commerce.exception.BadRequestException;
 import com.example.cecv_e_commerce.service.AuthService;
+import com.example.cecv_e_commerce.service.CartService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private CartService cartService;
 
     @Value("${app.activation.base-url}")
     private String activationBaseUrl;
@@ -116,6 +120,8 @@ public class AuthServiceImpl implements AuthService {
         user.setActivationToken(null); // Delete token after active
         user.setActivationDeadline(null);
         userRepository.save(user);
+        cartService.createCart(user);
+
         logger.info("Account activated successfully for email: {}", user.getEmail());
     }
 
