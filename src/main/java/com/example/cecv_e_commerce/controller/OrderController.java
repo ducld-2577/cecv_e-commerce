@@ -3,6 +3,9 @@ package com.example.cecv_e_commerce.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.cecv_e_commerce.service.OrderService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +26,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public OrderResponseDTO createOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
+    public OrderResponseDTO createOrder(@Valid @RequestBody OrderRequestDTO orderRequestDTO) {
         return orderService.createOrder(orderRequestDTO);
     }
 
@@ -34,19 +37,19 @@ public class OrderController {
 
     @DeleteMapping("/items")
     public OrderResponseDTO deleteOrderItem(
-            @RequestBody OrderItemRequestDeleteDTO orderItemRequestDeleteDTO) {
+            @Valid @RequestBody OrderItemRequestDeleteDTO orderItemRequestDeleteDTO) {
         return orderService.deleteOrderItem(orderItemRequestDeleteDTO);
     }
 
     @PostMapping("/items")
     public OrderResponseDTO createOrderItem(
-            @RequestBody OrderItemRequestCreateDTO orderItemRequestCreateDTO) {
+            @Valid @RequestBody OrderItemRequestCreateDTO orderItemRequestCreateDTO) {
         return orderService.createOrderItem(orderItemRequestCreateDTO);
     }
 
     @PutMapping("/items")
     public OrderResponseDTO updateOrderItem(
-            @RequestBody OrderItemRequestUpdateDTO orderItemRequestUpdateDTO) {
+            @Valid @RequestBody OrderItemRequestUpdateDTO orderItemRequestUpdateDTO) {
         return orderService.updateOrderItem(orderItemRequestUpdateDTO);
     }
 }
