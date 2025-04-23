@@ -46,18 +46,19 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         if (product.getQuantity() < cartItemRequestDTO.getQuantity()) {
-            throw new BadRequestException("Not enough stock available. Available quantity: " + product.getQuantity());
+            throw new BadRequestException(
+                    "Not enough stock available. Available quantity: " + product.getQuantity());
         }
 
         CartItem existingCartItem = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(product.getId()))
-                .findFirst()
+                .filter(item -> item.getProduct().getId().equals(product.getId())).findFirst()
                 .orElse(null);
 
         if (existingCartItem != null) {
             Integer newQuantity = existingCartItem.getQuantity() + cartItemRequestDTO.getQuantity();
             if (newQuantity > product.getQuantity()) {
-                    throw new BadRequestException("Not enough stock available. Available quantity: " + product.getQuantity());
+                throw new BadRequestException(
+                        "Not enough stock available. Available quantity: " + product.getQuantity());
             }
             existingCartItem.setQuantity(newQuantity);
         } else {
@@ -81,15 +82,16 @@ public class CartServiceImpl implements CartService {
         return mapToCartResponseDTO(cart);
     }
 
-    public CartResponseDTO updateCartItem(Integer productId, CartItemRequestUpdateDTO cartItemRequestUpdateDTO) {
+    public CartResponseDTO updateCartItem(Integer productId,
+            CartItemRequestUpdateDTO cartItemRequestUpdateDTO) {
         Cart cart = getCurrentUserCart();
         CartItem cartItem = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst()
+                .filter(item -> item.getProduct().getId().equals(productId)).findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found in cart"));
 
         if (cartItemRequestUpdateDTO.getQuantity() > cartItem.getProduct().getQuantity()) {
-            throw new BadRequestException("Not enough stock available. Available quantity: " + cartItem.getProduct().getQuantity());
+            throw new BadRequestException("Not enough stock available. Available quantity: "
+                    + cartItem.getProduct().getQuantity());
         }
 
         cartItem.setQuantity(cartItemRequestUpdateDTO.getQuantity());
@@ -106,7 +108,7 @@ public class CartServiceImpl implements CartService {
         return mapToCartResponseDTO(cart);
     }
 
-    
+
     private User getCurrentUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (user == null) {
@@ -130,7 +132,7 @@ public class CartServiceImpl implements CartService {
     private CartItemDTO mapToCartItemDTO(CartItem cartItem) {
         Product product = cartItem.getProduct();
         ProductDTO productDTO = new ProductDTO(product.getId(), product.getName(),
-            product.getDescription(), product.getPrice(), product.getQuantity());
+                product.getDescription(), product.getPrice(), product.getQuantity());
 
         return new CartItemDTO(cartItem.getId(), cartItem.getQuantity(), productDTO);
     }

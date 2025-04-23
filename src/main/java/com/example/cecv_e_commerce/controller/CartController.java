@@ -29,7 +29,8 @@ public class CartController {
     }
 
     @PostMapping()
-    public CartResponseDTO addToCart(@Valid @RequestBody CartItemRequestCreateDTO cartItemRequestDTO) {
+    public CartResponseDTO addToCart(
+            @Valid @RequestBody CartItemRequestCreateDTO cartItemRequestDTO) {
         return cartService.addToCart(cartItemRequestDTO);
     }
 
@@ -40,7 +41,7 @@ public class CartController {
 
     @PutMapping("/{productId}")
     public CartResponseDTO updateCartItem(@PathVariable Integer productId,
-        @Valid @RequestBody CartItemRequestUpdateDTO cartItemRequestUpdateDTO) {
+            @Valid @RequestBody CartItemRequestUpdateDTO cartItemRequestUpdateDTO) {
         return cartService.updateCartItem(productId, cartItemRequestUpdateDTO);
     }
 
