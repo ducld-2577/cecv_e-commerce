@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.example.cecv_e_commerce.domain.dto.order.OrderItemRequestCreateDTO;
 import com.example.cecv_e_commerce.domain.dto.order.OrderItemRequestDeleteDTO;
 import com.example.cecv_e_commerce.domain.dto.order.OrderItemRequestUpdateDTO;
 import com.example.cecv_e_commerce.domain.dto.order.OrderRequestDTO;
@@ -39,12 +38,6 @@ public class OrderController {
     public OrderResponseDTO deleteOrderItem(
             @Valid @RequestBody OrderItemRequestDeleteDTO orderItemRequestDeleteDTO) {
         return orderService.deleteOrderItem(orderItemRequestDeleteDTO);
-    }
-
-    @PostMapping("/items")
-    public OrderResponseDTO createOrderItem(
-            @Valid @RequestBody OrderItemRequestCreateDTO orderItemRequestCreateDTO) {
-        return orderService.createOrderItem(orderItemRequestCreateDTO);
     }
 
     @PutMapping("/items")

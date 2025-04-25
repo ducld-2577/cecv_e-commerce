@@ -64,45 +64,7 @@ public class OrderServiceImpl implements OrderService {
         }).collect(Collectors.toList());
 
         order.setOrderItems(orderItems);
-        order.setTotal(order.getOrderItems().stream()
-                .mapToDouble(item -> item.getPrice() * item.getQuantity()).sum());
         order.setStatus(OrderStatusEnum.PENDING);
-
-        orderRepository.save(order);
-
-        return convertOrderToOrderResponseDTO(order);
-    }
-
-    @Override
-    @Transactional
-    public OrderResponseDTO createOrderItem(OrderItemRequestCreateDTO orderItemRequestCreateDTO) {
-        Order order = findOrderByIdAndCheckAccess(orderItemRequestCreateDTO.getOrderId());
-        Product product = productRepository.findByIdWithLock(orderItemRequestCreateDTO.getProductId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-
-        OrderItem existingOrderItem = order.getOrderItems().stream()
-                .filter(item -> item.getProduct().getId().equals(product.getId())).findFirst()
-                .orElse(null);
-
-        if (existingOrderItem != null) {
-            int newQuantity =
-                    existingOrderItem.getQuantity() + orderItemRequestCreateDTO.getQuantity();
-            validateAndUpdateProductQuantity(product, newQuantity, existingOrderItem.getQuantity());
-            existingOrderItem.setQuantity(newQuantity);
-            existingOrderItem.setPrice(orderItemRequestCreateDTO.getPrice());
-            orderItemRepository.save(existingOrderItem);
-        } else {
-            validateAndUpdateProductQuantity(product, orderItemRequestCreateDTO.getQuantity(), 0);
-
-            OrderItem orderItem = new OrderItem();
-            orderItem.setProduct(product);
-            orderItem.setQuantity(orderItemRequestCreateDTO.getQuantity());
-            orderItem.setPrice(orderItemRequestCreateDTO.getPrice());
-            orderItem.setOrder(order);
-
-            orderItemRepository.save(orderItem);
-        }
-
         updateOrderTotal(order);
 
         return convertOrderToOrderResponseDTO(order);
@@ -171,18 +133,16 @@ public class OrderServiceImpl implements OrderService {
             throw new ResourceNotFoundException("Order not found");
         }
 
+        if (order.getStatus() != OrderStatusEnum.PENDING) {
+            throw new BadRequestException("Cannot modify a order is not pending");
+        }
+
         return order;
     }
 
     private OrderItem findOrderItemByIdAndCheckAccess(Integer orderItemId) {
-        User user = getCurrentUser();
-        OrderItem orderItem = orderItemRepository.findById(orderItemId)
+        return orderItemRepository.findById(orderItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order item not found"));
-        if (orderItem.getOrder().getUser().getId() != user.getId()) {
-            throw new ResourceNotFoundException("Order item not found");
-        }
-
-        return orderItem;
     }
 
     private void updateOrderTotal(Order order) {
