@@ -26,6 +26,12 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private OrderShipping orderShipping;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private OrderPayment orderPayment;
+
     private Double total;
 
     @Enumerated(EnumType.STRING)
