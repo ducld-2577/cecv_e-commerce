@@ -17,7 +17,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import jakarta.persistence.Column;
 
 @Entity
-@Table(name = "order_payment")
+@Table(name = "order_payments")
 @Getter
 @Setter
 @NoArgsConstructor
