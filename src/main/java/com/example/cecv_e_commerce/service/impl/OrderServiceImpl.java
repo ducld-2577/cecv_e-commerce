@@ -261,6 +261,10 @@ public class OrderServiceImpl implements OrderService {
         User user = getCurrentUser();
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        if ("ADMIN".equalsIgnoreCase(user.getRole().name())) {
+            return order;
+        }
+
         if (order.getUser().getId() != user.getId()) {
             throw new ResourceNotFoundException("Order not found");
         }
