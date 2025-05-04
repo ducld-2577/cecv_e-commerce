@@ -17,6 +17,7 @@ import com.example.cecv_e_commerce.domain.dto.order.OrderItemRequestUpdateDTO;
 import com.example.cecv_e_commerce.domain.dto.order.OrderPaymentRequestDTO;
 import com.example.cecv_e_commerce.domain.dto.order.OrderRequestDTO;
 import com.example.cecv_e_commerce.domain.dto.order.OrderResponseDTO;
+import com.example.cecv_e_commerce.domain.dto.order.OrderStatusRequestDTO;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -48,9 +49,14 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}/payment")
-    public OrderResponseDTO updateOrderPayment(
-            @PathVariable Integer orderId,
+    public OrderResponseDTO updateOrderPayment(@PathVariable Integer orderId,
             @Valid @RequestBody OrderPaymentRequestDTO orderPaymentRequestDTO) {
         return orderService.updateOrderPayment(orderId, orderPaymentRequestDTO);
+    }
+
+    @PutMapping("/{orderId}/status")
+    public OrderResponseDTO updateOrderStatus(@PathVariable Integer orderId,
+            @Valid @RequestBody OrderStatusRequestDTO orderStatusRequestDTO) {
+        return orderService.updateOrderStatus(orderId, orderStatusRequestDTO);
     }
 }
