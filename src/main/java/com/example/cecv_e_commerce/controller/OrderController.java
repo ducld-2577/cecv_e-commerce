@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.example.cecv_e_commerce.domain.dto.order.OrderItemRequestDeleteDTO;
 import com.example.cecv_e_commerce.domain.dto.order.OrderItemRequestUpdateDTO;
+import com.example.cecv_e_commerce.domain.dto.order.OrderPaymentRequestDTO;
 import com.example.cecv_e_commerce.domain.dto.order.OrderRequestDTO;
 import com.example.cecv_e_commerce.domain.dto.order.OrderResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +45,12 @@ public class OrderController {
     public OrderResponseDTO updateOrderItem(
             @Valid @RequestBody OrderItemRequestUpdateDTO orderItemRequestUpdateDTO) {
         return orderService.updateOrderItem(orderItemRequestUpdateDTO);
+    }
+
+    @PutMapping("/{orderId}/payment")
+    public OrderResponseDTO updateOrderPayment(
+            @PathVariable Integer orderId,
+            @Valid @RequestBody OrderPaymentRequestDTO orderPaymentRequestDTO) {
+        return orderService.updateOrderPayment(orderId, orderPaymentRequestDTO);
     }
 }
