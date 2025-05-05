@@ -169,7 +169,6 @@ public class OrderServiceImpl implements OrderService {
         if (orderPaymentRequestDTO.getTransactionId() != null) {
             orderPayment.setTransactionId(orderPaymentRequestDTO.getTransactionId());
         }
-
         if (orderPaymentRequestDTO.getPaidAt() != null) {
             orderPayment.setPaidAt(orderPaymentRequestDTO.getPaidAt());
         }
