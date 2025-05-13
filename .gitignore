@@ -28,6 +28,7 @@ replay_pid*
 
 src/main/resources/application.properties
 src/main/resources/application.yml
+src/test/resources/application-test.properties
 
 HELP.md
 target/
